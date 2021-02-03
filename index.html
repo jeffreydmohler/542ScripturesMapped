@@ -1,0 +1,50 @@
+<!doctype html>
+<html class="no-js" lang="">
+<head>
+    <meta charset="utf-8">
+    <title>The Scriptures, Mapped</title>
+    <meta name="description" content="The Standard Works, Mapped">
+    <meta name="author" content="Jeffrey Mohler">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+
+    <link rel="apple-touch-icon" href="icon.png">
+    <!-- Place favicon.ico in the root directory -->
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <meta name="theme-color" content="#fafafa">
+</head>
+<body>
+
+    <div id="header">
+        <div id="centerhead">
+            <div id="title">The Scriptures, Mapped</div>
+            <div id="subtitle">By Jeffrey Mohler</div>
+        </div>
+    </div>
+    <div id="content">
+        <div id="scriptures"></div>
+        <div id="map"></div>
+    </div>
+
+    <script src="js/scriptures.js"></script>
+    <script type="text/javascript">
+        function ready(readylistener) {
+            if (document.readyState !== "loading") {
+                readylistener();
+            } else {
+                document.addEventListener("DOMContentLoaded", readylistener);
+            }
+        }
+
+        ready(function () {
+            Scriptures.init(() => { console.log("Initialized Scriptures module."); });
+        })
+    </script>
+</body>
+</html>
