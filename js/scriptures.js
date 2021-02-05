@@ -7,11 +7,13 @@
  *              IS 542, Winter 2021, BYU.
  */
 /*jslint
-    browser
+    browser, long
 */
 /*property
-    books, forEach, init, maxBookId, minBookId, onerror, onload, open, parse,
-    push, response, send, status
+    books, classKey, content, forEach, fullName, getElementById, gridName, hash,
+    href, id, init, innerHTML, length, log, maxBookId, minBookId, numChapters,
+    onHashChanged, onerror, onload, open, parse, push, response, send, slice,
+    split, status
 */
 
 const Scriptures = (function () {
@@ -22,13 +24,14 @@ const Scriptures = (function () {
      */
     const BOTTOM_PADDING = "<br/><br/>";
     const CLASS_BOOKS = "books";
+    const CLASS_BUTTON = "btn";
     const CLASS_VOLUME = "volume";
     const DIV_SCRIPTURES_NAVIGATOR = "scripnav";
     const DIV_SCRIPTURES = "scriptures";
     const REQUEST_GET = "GET";
     const REQUEST_STATUS_OK = 200;
     const REQUEST_STATUS_ERROR = 400;
-    const TAG_HEADERS = "h5";
+    const TAG_HEADER5 = "h5";
     const URL_BASE = "https://scriptures.byu.edu/";
     const URL_BOOKS = `${URL_BASE}mapscrip/model/books.php`;
     const URL_VOLUMES = `${URL_BASE}mapscrip/model/volumes.php`;
@@ -44,6 +47,9 @@ const Scriptures = (function () {
      *                      PRIVATE METHOD DECLARATIONS
      */
     let ajax;
+    let bookChapterValid;
+    let booksGrid;
+    let booksGridContent;
     let cacheBooks;
     let htmlAnchor;
     let htmlDiv;
@@ -51,8 +57,11 @@ const Scriptures = (function () {
     let htmlLink;
     let htmlHashLink;
     let init;
+    let navigateBook;
+    let navigateChapter;
     let navigateHome;
     let onHashChanged;
+    let volumesGridContent;
 
     /*-------------------------------------------------------------------
      *                      PRIVATE METHODS
@@ -80,6 +89,42 @@ const Scriptures = (function () {
         request.send();
     };
 
+    bookChapterValid = function (bookId, chapter) {
+        let book = books[bookId];
+
+        if (book === undefined || chapter < 0 || chapter > book.numChapters) {
+            return false;
+        }
+
+        if (chapter === 0 && book.numChapters > 0) {
+            return false;
+        }
+
+        return true;
+    };
+
+    booksGrid = function(volume) {
+        return htmlDiv({
+            classKey: CLASS_BOOKS,
+            content: booksGridContent(volume)
+        });
+    };
+
+    booksGridContent = function(volume) {
+        let gridContent = "";
+
+        volume.books.forEach(function (book) {
+            gridContent += htmlLink({
+                classKey: CLASS_BUTTON,
+                id: book.id,
+                href: `#${volume.id}:${book.id}`,
+                content: book.gridName
+            });
+        });
+
+        return gridContent;
+    };
+
     cacheBooks = function (callback) {
         volumes.forEach(function (volume) {
             let volumeBooks = [];
@@ -101,56 +146,56 @@ const Scriptures = (function () {
     htmlAnchor = function (volume) {
         return `<a name="v${volume.id}" />`;
     };
-    
+
     htmlDiv = function (parameters) {
         let classString = "";
         let contentString = "";
         let idString = "";
-    
+
         if (parameters.classKey !== undefined) {
             classString = ` class="${parameters.classKey}"`;
         }
-    
+
         if (parameters.content !== undefined) {
             contentString = parameters.content;
         }
-    
+
         if (parameters.id !== undefined) {
             idString = ` id="${parameters.id}"`;
         }
-    
-        return `<div${idString}${classString}>${contentString}</div`;
+
+        return `<div${idString}${classString}>${contentString}</div>`;
     };
-    
+
     htmlElement = function (tagName, content) {
         return `<${tagName}>${content}</${tagName}>`;
     };
-    
+
     htmlLink = function (parameters) {
         let classString = "";
         let contentString = "";
         let hrefString = "";
         let idString = "";
-    
+
         if (parameters.classKey !== undefined) {
             classString = ` class="${parameters.classKey}"`;
         }
-    
+
         if (parameters.content !== undefined) {
             contentString = parameters.content;
         }
-    
+
         if (parameters.href !== undefined) {
-            hrefString = ` class="${parameters.href}"`;
+            hrefString = ` href="${parameters.href}"`;
         }
-    
+
         if (parameters.id !== undefined) {
             idString = ` id="${parameters.id}"`;
         }
-    
-        return `<div${idString}${classString}${hrefString}>${contentString}</div`;
+
+        return `<a${idString}${classString}${hrefString}>${contentString}</a>`;
     };
-    
+
     htmlHashLink = function (hashArguments, content) {
         return `<a href="javascript:void(0)" onclick="changeHash(${hashArguments})">${content}</a>`;
     };
@@ -177,35 +222,81 @@ const Scriptures = (function () {
         });
     };
 
+    navigateBook = function (bookId) {
+        console.log("navigateBook " + bookId);
+    };
+
+    navigateChapter = function (bookId, chapter) {
+        console.log("navigateBook " + bookId + ", " + chapter);
+    };
+
     navigateHome = function (volumeId) {
-        document.getElementById(DIV_SCRIPTURES).innerHTML = 
-            "<div>Old Testament</div>" +
-            "<div>New Testament</div>" +
-            "<div>Book of Mormon</div>" + 
-            "<div>Doctrine and Covenants</div>" +
-            "<div>Pearl of Great Price</div>" + volumeId;
+        document.getElementById(DIV_SCRIPTURES).innerHTML = htmlDiv({
+            id: DIV_SCRIPTURES_NAVIGATOR,
+            content: volumesGridContent(volumeId)
+        });
+
     };
 
     onHashChanged = function () {
         let ids = [];
 
         if (location.hash !== "" && location.hash.length > 1) {
-            ids = location.hash.slice(1).split(":");
+            ids = location.hash.slice(1).split(":"); // .map(x => Number(x))
         }
 
         if (ids.length <= 0) {
             navigateHome();
-        } 
+        }
         else if (ids.length === 1) {
             let volumeId = Number(ids[0]);
 
             if (volumeId < volumes[0].id || volumeId > volumes.slice(-1)[0].id) {
-                navigateHome()
+                navigateHome();
             }
             else {
                 navigateHome(volumeId);
             }
         }
+        else { // ids.length >= 2
+            let bookId = Number(ids[1]);
+
+            if (books[bookId] === undefined) {
+                navigateHome();
+            }
+            else {
+                if (ids.length === 2) {
+                    navigateBook(bookId);
+                }
+                else {
+                    let chapter = Number(ids[2]);
+
+                    if (bookChapterValid(bookId, chapter)) {
+                        navigateChapter(bookId, chapter);
+                    }
+                    else {
+                        navigateHome();
+                    }
+                }
+            }
+        }
+    };
+
+    volumesGridContent = function(volumeId) {
+        let gridContent = "";
+
+        volumes.forEach(function (volume) {
+            if (volumeId === undefined || volumeId === volume.id) {
+                gridContent += htmlDiv({
+                    classKey: CLASS_VOLUME,
+                    content: htmlAnchor(volume) + htmlElement(TAG_HEADER5, volume.fullName)
+                });
+
+                gridContent += booksGrid(volume);
+            }
+        });
+
+        return gridContent;
     };
 
     /*-------------------------------------------------------------------
