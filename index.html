@@ -15,9 +15,12 @@
     <link rel="apple-touch-icon" href="icon.png">
     <!-- Place favicon.ico in the root directory -->
 
+    <script defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrY1UB6DXdNyEoG_7e2E9zPKFvkcUKC78&callback=initMap">
+    </script>
+
     <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
     <link rel="stylesheet" href="css/style.css">
-    
 
     <meta name="theme-color" content="#fafafa">
 </head>
@@ -25,18 +28,24 @@
 
     <div id="header">
         <div id="centerhead">
-            <div id="title">The Scriptures, Mapped</div>
-            <div id="subtitle">By Jeffrey Mohler</div>
+            <div class="title">The Scriptures, Mapped</div>
+            <div class="subtitle">By Jeffrey Mohler</div>
         </div>
     </div>
     <div id="content">
         <div id="scriptures"></div>
         <div id="map"></div>
     </div>
-    <br/><br/>
 
     <script src="js/scriptures.js"></script>
     <script type="text/javascript">
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: {lat: -34.397, lng: 150.644},
+                zoom: 8
+            });
+        }
+
         function ready(readylistener) {
             if (document.readyState !== "loading") {
                 readylistener();
