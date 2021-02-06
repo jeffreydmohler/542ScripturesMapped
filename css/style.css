@@ -271,3 +271,11 @@ span.verse {
 li.match {
     background-color: #ffffcc;
 }
+
+.nextchapter {
+    float: right;
+}
+
+.prevchapter {
+    float: left;
+}
