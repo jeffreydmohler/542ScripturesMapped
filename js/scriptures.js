@@ -27,6 +27,7 @@ const Scriptures = (function () {
      */
     const BOTTOM_PADDING = "<br/><br/>";
     const CLASS_BOOKS = "books";
+    const CLASS_BOOK_BUTTON = "bookbutton";
     const CLASS_BUTTON = "btn";
     const CLASS_CHAPTER = "chapter";
     const CLASS_VOLUME = "volume";
@@ -249,21 +250,34 @@ const Scriptures = (function () {
 
     getScripturesCallback = function(chapterHtml) {
         let ids = location.hash.slice(1).split(":");
+        let nextChapterButton = "";
+        let prevChapterButton = "";
+
         let nextChapterArray = nextChapter(Number(ids[1]), Number(ids[2]));
-        let nextChapterButton = htmlLink({
-            classKey: `${CLASS_BUTTON} ${CLASS_NEXT}`,
-            href: `#0:${nextChapterArray[0]}:${nextChapterArray[1]}`,
-            content: nextChapterArray[2]
-        });
+        if (nextChapterArray !== undefined) {
+            nextChapterButton = htmlLink({
+                classKey: `${CLASS_BUTTON} ${CLASS_NEXT}`,
+                href: `#0:${nextChapterArray[0]}:${nextChapterArray[1]}`,
+                content: nextChapterArray[2]
+            });
+        }
 
         let prevChapterArray = previousChapter(Number(ids[1]), Number(ids[2]));
-        let prevChapterButton = htmlLink({
-            classKey: `${CLASS_BUTTON} ${CLASS_PREVIOUS}`,
-            href: `#0:${prevChapterArray[0]}:${prevChapterArray[1]}`,
-            content: prevChapterArray[2]
+        if (prevChapterArray !== undefined) {
+            prevChapterButton = htmlLink({
+                classKey: `${CLASS_BUTTON} ${CLASS_PREVIOUS}`,
+                href: `#0:${prevChapterArray[0]}:${prevChapterArray[1]}`,
+                content: prevChapterArray[2]
+            });
+        }
+
+        let bookButton = htmlLink({
+            classKey: `${CLASS_BUTTON} ${CLASS_BOOK_BUTTON}`,
+            href: `#0:${nextChapterArray[0]}`,
+            content: books[ids[1]].tocName
         });
 
-        document.getElementById(DIV_SCRIPTURES).innerHTML = `${prevChapterButton}${nextChapterButton}<div style="clear: both;"></div>${chapterHtml}`;
+        document.getElementById(DIV_SCRIPTURES).innerHTML = `${prevChapterButton}${bookButton}${nextChapterButton}<div style="clear: both;"></div>${chapterHtml}`;
 
         setUpMarkers()
     };

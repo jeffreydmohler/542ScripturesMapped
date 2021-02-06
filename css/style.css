@@ -273,9 +273,22 @@ li.match {
 }
 
 .nextchapter {
-    float: right;
+    float: left;
+    width:30%;
+    text-align:right;
+    padding: .5em;
 }
 
 .prevchapter {
     float: left;
+    width:30%;
+    text-align:left;
+    padding: .5em;
+}
+
+.bookbutton {
+    float: left;
+    width:30%;
+    text-align:center;
+    padding: .5em;
 }
