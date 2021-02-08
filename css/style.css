@@ -292,3 +292,7 @@ li.match {
     text-align:center;
     padding: .5em;
 }
+
+.volumebutton {
+    padding: 1em;
+}
