@@ -13,13 +13,13 @@
     console, map, google
 */
 /*property
-    Animation, DROP, Marker, animation, books, classKey, content, east, exec,
-    fitBounds, forEach, fullName, getAttribute, getElementById, gridName, hash,
-    href, id, includes, init, innerHTML, label, lat, length, lng, map, maps,
-    maxBookId, minBookId, north, numChapters, onHashChanged, onerror, onload,
-    open, parse, position, push, querySelectorAll, response, send, setCenter,
-    setMap, setZoom, showLocation, slice, south, split, status, title,
-    toLowerCase, tocName, west
+    Animation, DROP, LatLngBounds, Marker, animation, books, classKey, content,
+    exec, extend, fitBounds, forEach, fullName, getAttribute, getElementById,
+    getPosition, gridName, hash, href, id, includes, init, innerHTML, label,
+    lat, length, lng, map, maps, maxBookId, minBookId, numChapters,
+    onHashChanged, onerror, onload, open, parse, position, push,
+    querySelectorAll, response, send, setCenter, setMap, setZoom, showLocation,
+    slice, split, status, title, toLowerCase, tocName
 */
 
 const Scriptures = (function () {
