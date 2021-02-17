@@ -104,21 +104,32 @@ const Scriptures = (function () {
             if (marker.position.lat() === Number(latitude) && marker.position.lng() === Number(longitude)) {
                 bMarkerInArray = true;
 
-                if (!marker.title.toLowerCase().includes(placename.toLowerCase()) || !placename.toLowerCase().includes(marker.title.toLowerCase())) {
+                if (!marker.title.toLowerCase().includes(placename.toLowerCase()) && !placename.toLowerCase().includes(marker.title.toLowerCase())) {
                     marker.title = `${marker.title}, ${placename}`;
-                    marker.label = marker.title;
+                    //marker.labelContent = marker.title;
+                    marker.set("labelContent", marker.title);
                 }
             }
         });
 
         if (!bMarkerInArray) {
-            let marker = new google.maps.Marker({
+            //uses the marker with Label js class linked in the index.html
+            let marker = new MarkerWithLabel({
                 position: {lat: Number(latitude), lng: Number(longitude)},
-                label: placename,
+                labelContent: placename,
+                labelClass: "labels",
                 map,
                 title: placename,
                 animation: google.maps.Animation.DROP
             });
+
+            // let marker = new google.maps.Marker({
+            //     position: {lat: Number(latitude), lng: Number(longitude)},
+            //     label: placename,
+            //     map,
+            //     title: placename,
+            //     animation: google.maps.Animation.DROP
+            // });
 
             gmMarkers.push(marker);
         }

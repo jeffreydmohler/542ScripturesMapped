@@ -296,3 +296,8 @@ li.match {
 .volumebutton {
     padding: 1em;
 }
+
+.labels {
+    background-color: white;
+    border: solid 1px;
+}
