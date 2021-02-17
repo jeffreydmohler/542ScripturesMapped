@@ -90,30 +90,24 @@ const addMarker = function (placename, latitude, longitude) {
 
 
 const ajax = function (url, successCallback, failureCallback, skipJsonParse) {
-    let request = new XMLHttpRequest();
-
-    request.open(REQUEST_GET, url, true);
-
-    request.onload = function () {
-        if (request.status >= REQUEST_STATUS_OK && request.status < REQUEST_STATUS_ERROR) {
-            let data = (
-                skipJsonParse
-                ? request.response
-                : JSON.parse(request.response)
-            );
-
-            if (typeof successCallback === "function") {
-                successCallback(data);
-            }
-        } else {
-            if (typeof failureCallback === "function") {
-                failureCallback(request);
+    fetch(url)
+    .then(function (response) {
+        if (response.ok) {
+            if (skipJsonParse) {
+                return response.text();
+            } else {
+                return response.json();
             }
         }
-    };
 
-    request.onerror = failureCallback;
-    request.send();
+        throw new Error("Network response was not okay.");
+    })
+    .then(function (data) {
+        successCallback(data);
+    })
+    .catch(function (error) {
+        failureCallback(error);
+    });
 };
 
 const bookChapterValid = function (bookId, chapter) {
