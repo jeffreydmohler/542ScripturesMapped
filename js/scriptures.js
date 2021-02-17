@@ -80,7 +80,6 @@ const Scriptures = (function () {
     let htmlDiv;
     let htmlElement;
     let htmlLink;
-    //let htmlHashLink;
     let init;
     let navigateBook;
     let navigateChapter;
@@ -106,30 +105,19 @@ const Scriptures = (function () {
 
                 if (!marker.title.toLowerCase().includes(placename.toLowerCase()) && !placename.toLowerCase().includes(marker.title.toLowerCase())) {
                     marker.title = `${marker.title}, ${placename}`;
-                    //marker.labelContent = marker.title;
-                    marker.set("labelContent", marker.title);
+                    marker.label = marker.title;
                 }
             }
         });
 
         if (!bMarkerInArray) {
-            //uses the marker with Label js class linked in the index.html
-            let marker = new MarkerWithLabel({
+            let marker = new google.maps.Marker({
                 position: {lat: Number(latitude), lng: Number(longitude)},
-                labelContent: placename,
-                labelClass: "labels",
+                label: placename,
                 map,
                 title: placename,
                 animation: google.maps.Animation.DROP
             });
-
-            // let marker = new google.maps.Marker({
-            //     position: {lat: Number(latitude), lng: Number(longitude)},
-            //     label: placename,
-            //     map,
-            //     title: placename,
-            //     animation: google.maps.Animation.DROP
-            // });
 
             gmMarkers.push(marker);
         }
@@ -377,10 +365,6 @@ const Scriptures = (function () {
         return `<a${idString}${classString}${hrefString}>${contentString}</a>`;
     };
 
-    // htmlHashLink = function (hashArguments, content) {
-    //     return `<a href="javascript:void(0)" onclick="changeHash(${hashArguments})">${content}</a>`;
-    // };
-
     init = function (callback) {
         let booksLoaded = false;
         let volumesLoaded = false;
@@ -587,30 +571,6 @@ const Scriptures = (function () {
                 bounds.extend(marker.getPosition());
                 map.fitBounds(bounds);
             });
-        //     let lat_low = 90;
-        //     let lat_high = -90;
-        //     let long_low = 180;
-        //     let long_high = 0;
-
-        //     gmMarkers.forEach(function (marker) {
-        //         let lat = marker.position.lat();
-        //         let long = marker.position.lng();
-
-        //         if (lat < lat_low) {
-        //             lat_low = lat;
-        //         }
-        //         if (lat > lat_high) {
-        //             lat_high = lat;
-        //         }
-        //         if (long < long_low) {
-        //             long_low = long;
-        //         }
-        //         if (long > long_high) {
-        //             long_high = long;
-        //         }
-        //     });
-
-        //     map.fitBounds({south: lat_low, west: long_low, north: lat_high, east: long_high}, 25);
         }
     };
 
