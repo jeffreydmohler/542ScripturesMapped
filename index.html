@@ -39,8 +39,6 @@
         <div id="scriptures"></div>
         <div id="map"></div>
     </div>
-
-    <script src="js/scriptures.js"></script>
     <script type="text/javascript">
         let map;
 
@@ -51,21 +49,25 @@
             });
         }
 
-        function ready(readylistener) {
-            if (document.readyState !== "loading") {
-                readylistener();
-            } else {
-                document.addEventListener("DOMContentLoaded", readylistener);
+    </script>
+    <script type="module">
+        import("./js/scriptures.js").then(module => {
+            function ready(readylistener) {
+                if (document.readyState !== "loading") {
+                    readylistener();
+                } else {
+                    document.addEventListener("DOMContentLoaded", readylistener);
+                }
             }
-        }
 
-        function showLocation() {
-            Scriptures.showLocation(...arguments);
-        }
+            function showLocation() {
+                module.default.showLocation(...arguments);
+            }
 
-        ready(function () {
-            Scriptures.init(() => { Scriptures.onHashChanged(); });
-            window.addEventListener("hashchange", Scriptures.onHashChanged);
+            ready(function () {
+                module.default.init(() => { module.default.onHashChanged(); });
+                window.addEventListener("hashchange", module.default.onHashChanged);
+            })
         })
     </script>
 </body>
