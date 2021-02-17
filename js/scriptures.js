@@ -103,11 +103,21 @@ const ajax = function (url, successCallback, failureCallback, skipJsonParse) {
         throw new Error("Network response was not okay.");
     })
     .then(function (data) {
-        successCallback(data);
+        if (typeof successCallback === "function") {
+            successCallback(data);
+        }
+        else {
+            console.log("Fetch was successful.");
+        }
     })
     .catch(function (error) {
-        failureCallback(error);
-    });
+        if (typeof failureCallback === "function") {
+            failureCallback(error);
+        }
+        else {
+            console.log(error.message);
+        }
+    })
 };
 
 const bookChapterValid = function (bookId, chapter) {
