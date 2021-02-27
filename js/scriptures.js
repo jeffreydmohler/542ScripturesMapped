@@ -62,32 +62,6 @@ let volumes;
 /*-------------------------------------------------------------------
     *                      PRIVATE METHODS
     */
-// const addMarker = function (placename, latitude, longitude) {
-//     let bMarkerInArray = false;
-
-//     gmMarkers.forEach(function (marker) {
-//         if (marker.position.lat() === Number(latitude) && marker.position.lng() === Number(longitude)) {
-//             bMarkerInArray = true;
-
-//             if (!marker.title.toLowerCase().includes(placename.toLowerCase()) && !placename.toLowerCase().includes(marker.title.toLowerCase())) {
-//                 marker.title = `${marker.title}, ${placename}`;
-//                 marker.label = marker.title;
-//             }
-//         }
-//     });
-
-//     if (!bMarkerInArray) {
-//         let marker = new google.maps.Marker({
-//             position: {lat: Number(latitude), lng: Number(longitude)},
-//             label: placename,
-//             map,
-//             title: placename,
-//             animation: google.maps.Animation.DROP
-//         });
-
-//         gmMarkers.push(marker);
-//     }
-// };
 
 const addMarker = function (placename, latitude, longitude) {
     let bMarkerInArray = false;
