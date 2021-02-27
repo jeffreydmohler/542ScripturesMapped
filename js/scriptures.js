@@ -62,28 +62,76 @@ let volumes;
 /*-------------------------------------------------------------------
     *                      PRIVATE METHODS
     */
+// const addMarker = function (placename, latitude, longitude) {
+//     let bMarkerInArray = false;
+
+//     gmMarkers.forEach(function (marker) {
+//         if (marker.position.lat() === Number(latitude) && marker.position.lng() === Number(longitude)) {
+//             bMarkerInArray = true;
+
+//             if (!marker.title.toLowerCase().includes(placename.toLowerCase()) && !placename.toLowerCase().includes(marker.title.toLowerCase())) {
+//                 marker.title = `${marker.title}, ${placename}`;
+//                 marker.label = marker.title;
+//             }
+//         }
+//     });
+
+//     if (!bMarkerInArray) {
+//         let marker = new google.maps.Marker({
+//             position: {lat: Number(latitude), lng: Number(longitude)},
+//             label: placename,
+//             map,
+//             title: placename,
+//             animation: google.maps.Animation.DROP
+//         });
+
+//         gmMarkers.push(marker);
+//     }
+// };
+
 const addMarker = function (placename, latitude, longitude) {
     let bMarkerInArray = false;
 
     gmMarkers.forEach(function (marker) {
-        if (marker.position.lat() === Number(latitude) && marker.position.lng() === Number(longitude)) {
+        let latDelta = Math.abs(marker.position.lat() - Number(latitude));
+        let longDelta = Math.abs(marker.position.lng() - Number(longitude));
+
+        if (latDelta < 0.00000001 && longDelta < 0.00000001) {
             bMarkerInArray = true;
 
             if (!marker.title.toLowerCase().includes(placename.toLowerCase()) && !placename.toLowerCase().includes(marker.title.toLowerCase())) {
-                marker.title = `${marker.title}, ${placename}`;
-                marker.label = marker.title;
+                placename = `${marker.title}, ${placename}`
+
+                // delete marker from array
+                let index = gmMarkers.indexOf(marker);
+                if (index !== -1) {
+                    gmMarkers.splice(index, 1);
+                }
+
+                // set to false so marker is re-added
+                bMarkerInArray = false;
             }
         }
     });
 
     if (!bMarkerInArray) {
-        let marker = new google.maps.Marker({
+        //uses the marker with Label js class linked in the index.html
+        let marker = new MarkerWithLabel({
             position: {lat: Number(latitude), lng: Number(longitude)},
-            label: placename,
+            labelContent: placename,
+            labelClass: "labels",
             map,
             title: placename,
             animation: google.maps.Animation.DROP
         });
+
+        // let marker = new google.maps.Marker({
+        //     position: {lat: Number(latitude), lng: Number(longitude)},
+        //     label: placename,
+        //     map,
+        //     title: placename,
+        //     animation: google.maps.Animation.DROP
+        // });
 
         gmMarkers.push(marker);
     }
