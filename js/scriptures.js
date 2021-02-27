@@ -34,6 +34,7 @@ const CLASS_VOLUME = "volume";
 const CLASS_VOLUME_BUTTON = "volumebutton";
 const CLASS_NEXT = "nextchapter";
 const CLASS_PREVIOUS = "prevchapter";
+const DIV_BREADCRUMBS = "crumbs";
 const DIV_SCRIPTURES_NAVIGATOR = "scripnav";
 const DIV_SCRIPTURES = "scriptures";
 const INDEX_FLAG = 11;
@@ -42,6 +43,9 @@ const INDEX_LONGITUDE = 4;
 const INDEX_PLACENAME = 2;
 const LAT_LON_PARSER = /\((.*),'(.*)',(.*),(.*),(.*),(.*),(.*),(.*),(.*),(.*),'(.*)'\)/;
 const TAG_HEADER5 = "h5";
+const TAG_LIST_ITEM = "li";
+const TAG_UNORDERED_LIST = "ul";
+const TEXT_TOP_LEVEL = "The Scriptures";
 const URL_BASE = "https://scriptures.byu.edu/";
 const URL_BOOKS = `${URL_BASE}mapscrip/model/books.php`;
 const URL_SCRIPTURES = `${URL_BASE}mapscrip/mapgetscrip.php`;
@@ -172,11 +176,7 @@ const cacheBooks = function (callback) {
 };
 
 const chapterGrid = function (book) {
-    return htmlLink({
-        classKey: `${CLASS_BUTTON} ${CLASS_VOLUME_BUTTON}`,
-        href: "#",
-        content: "Volumes"
-    }) + htmlDiv({
+    return htmlDiv({
         classKey: CLASS_VOLUME,
         content: htmlElement(TAG_HEADER5, book.fullName)
     }) + htmlDiv({
@@ -231,6 +231,7 @@ const getScripturesCallback = function (chapterHtml) {
     let ids = location.hash.slice(1).split(":");
     let nextChapterButton = "";
     let prevChapterButton = "";
+    let book = books[ids[1]];
 
     let nextChapterArray = nextChapter(Number(ids[1]), Number(ids[2]));
     nextChapterButton = htmlLink({
@@ -266,16 +267,18 @@ const getScripturesCallback = function (chapterHtml) {
     let bookButton = htmlLink({
         classKey: `${CLASS_BUTTON} ${CLASS_BOOK_BUTTON}`,
         href: `#0:${ids[1]}`,
-        content: books[ids[1]].tocName
+        content: book.tocName
     });
 
     document.getElementById(DIV_SCRIPTURES).innerHTML = `${prevChapterButton}${bookButton}${nextChapterButton}<div style="clear: both;"></div>${chapterHtml}`;
-
+    //console.log(volumeForId(book.parentBookId), book, Number(ids[2]));
+    injectBreadcrumbs(volumeForId(book.parentBookId), book, Number(ids[2]));
     setUpMarkers();
 };
 
 const getScripturesFailure = function () {
     document.getElementById(DIV_SCRIPTURES).innerHTML = "Unable to receive chapter contents.";
+    injectBreadcrumbs();
 };
 
 const htmlAnchor = function (volume) {
@@ -331,6 +334,14 @@ const htmlLink = function (parameters) {
     return `<a${idString}${classString}${hrefString}>${contentString}</a>`;
 };
 
+const htmlListItem = function (content) {
+    return htmlElement(TAG_LIST_ITEM, content);
+};
+
+const htmlListItemLink = function (content, href = "") {
+    return htmlListItem(htmlLink({content, href: `#${href}`}));
+};
+
 const init = function (callback) {
     let booksLoaded = false;
     let volumesLoaded = false;
@@ -353,6 +364,31 @@ const init = function (callback) {
     });
 };
 
+const injectBreadcrumbs = function (volume, book, chapter) {
+    let crumbs = "";
+
+    if (volume === undefined) {
+        crumbs = htmlListItem(TEXT_TOP_LEVEL);
+    } else {
+        crumbs = htmlListItemLink(TEXT_TOP_LEVEL);
+
+        if (book === undefined) {
+            crumbs += htmlListItem(volume.fullName);
+        } else {
+            crumbs += htmlListItemLink(volume.fullName, volume.id);
+
+            if (chapter === undefined || chapter <= 0) {
+                crumbs += htmlListItem(book.tocName);
+            } else {
+                crumbs += htmlListItemLink(book.tocName, `${volume.id}:${book.id}`);
+                crumbs += htmlListItem(chapter);
+            }
+        }
+    }
+
+    document.getElementById(DIV_BREADCRUMBS).innerHTML = htmlElement(TAG_UNORDERED_LIST, crumbs);
+};
+
 const navigateBook = function (bookId) {
     let book = books[bookId];
 
@@ -363,6 +399,9 @@ const navigateBook = function (bookId) {
             id: DIV_SCRIPTURES_NAVIGATOR,
             content: chapterGrid(book)
         });
+
+        injectBreadcrumbs(volumeForId(book.parentBookId), book);
+        setUpMarkers();
     }
 };
 
@@ -376,6 +415,8 @@ const navigateHome = function (volumeId) {
         content: volumesGridContent(volumeId)
     });
 
+    injectBreadcrumbs(volumeForId(volumeId));
+    setUpMarkers();
 };
 
 const nextChapter = function (bookId, chapter) {
@@ -507,6 +548,12 @@ const titleForBookChapter = function (book, chapter) {
         }
 
         return book.tocName;
+    }
+};
+
+const volumeForId = function (volumeId) {
+    if (volumeId !== undefined && volumeId > 0 && volumeId < volumes.length) {
+        return volumes[volumeId - 1];
     }
 };
 
