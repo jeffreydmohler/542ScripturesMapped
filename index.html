@@ -42,6 +42,7 @@
     </div>
     <script type="text/javascript">
         let map;
+        let showLocation;
 
         function initMap() {
             map = new google.maps.Map(document.getElementById("map"), {
@@ -61,12 +62,9 @@
                 }
             }
 
-            function showLocation() {
-                module.default.showLocation(...arguments);
-            }
-
             ready(function () {
                 module.default.init(() => { module.default.onHashChanged(); });
+                showLocation = module.default.showLocation;
                 window.addEventListener("hashchange", module.default.onHashChanged);
             })
         })
