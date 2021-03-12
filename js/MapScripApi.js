@@ -88,6 +88,8 @@ const getData = function (url, successCallback, failureCallback, skipJsonParse) 
     }).catch(function (error) {
         if (typeof failureCallback === "function") {
             failureCallback(error);
+            console.log("Error: " + error);
+            console.log(error.stack)
         } else {
             console.log(error.message);
         }
@@ -121,7 +123,7 @@ const requestChapter = function (bookId, chapter, success, failure) {
 };
 
 const volumeForId = function (volumeId) {
-    if (volumeId !== undefined && volumeId > 0 && volumeId < volumes.length) {
+    if (volumeId !== undefined && volumeId > 0 && volumeId <= volumes.length) {
         return volumes[volumeId - 1];
     }
 };

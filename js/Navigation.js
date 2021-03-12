@@ -32,6 +32,8 @@ const CLASS_CHAPTER = "chapter";
 const CLASS_VOLUME = "volume";
 const DIV_SCRIPTURES_NAVIGATOR = "scripnav";
 const DIV_SCRIPTURES = "scriptures";
+const DIV_SCRIPTURES1 = "s1";
+const DIV_SCRIPTURES2 = "s2";
 const TAG_HEADER5 = "h5";
 
 
@@ -44,6 +46,8 @@ const TAG_HEADER5 = "h5";
 /*-------------------------------------------------------------------
     *                      PRIVATE METHODS
     */
+
+
 
 const bookChapterValid = function (bookId, chapter) {
     let book = books[bookId];
@@ -116,7 +120,7 @@ const navigateBook = function (bookId) {
     if (book.numChapters <= 1) {
         navigateChapter(bookId, book.numChapters);
     } else {
-        document.getElementById(DIV_SCRIPTURES).innerHTML = html.div({
+        document.getElementById(DIV_SCRIPTURES1).innerHTML = html.div({
             id: DIV_SCRIPTURES_NAVIGATOR,
             content: chapterGrid(book)
         });
@@ -128,7 +132,7 @@ const navigateBook = function (bookId) {
 
 
 const navigateHome = function (volumeId) {
-    document.getElementById(DIV_SCRIPTURES).innerHTML = html.div({
+    document.getElementById(DIV_SCRIPTURES1).innerHTML = html.div({
         id: DIV_SCRIPTURES_NAVIGATOR,
         content: volumesGridContent(volumeId)
     });

@@ -29,16 +29,18 @@ import {books} from "./MapScripApi.js";
     *                      CONSTANTS
     */
 
-const CLASS_BOOK_BUTTON = "bookbutton";
 const CLASS_BUTTON = "btn";
+const CLASS_CHAPTER_NAV = "chapternav";
 const CLASS_NEXT = "nextchapter";
 const CLASS_PREVIOUS = "prevchapter";
-const DIV_SCRIPTURES = "scriptures";
+const DIV_SCRIPTURES1 = "s1";
+const DIV_SCRIPTURES2 = "s2";
 
 /*-------------------------------------------------------------------
     *                      PRIVATE VARIABLES
     */
-
+let onScreenDiv = DIV_SCRIPTURES1;
+let offScreenDiv = DIV_SCRIPTURES2;
 
 /*-------------------------------------------------------------------
     *                      PRIVATE METHODS
@@ -79,20 +81,53 @@ const getScripturesCallback = function (chapterHtml) {
         )
     });
 
+    let ChapterNav = html.div({
+        classKey: CLASS_CHAPTER_NAV,
+        content: prevChapterButton + nextChapterButton
+    })
 
-    let bookButton = html.link({
-        classKey: `${CLASS_BUTTON} ${CLASS_BOOK_BUTTON}`,
-        href: `#0:${ids[1]}`,
-        content: book.tocName
-    });
+    let direction;
+    let currentChapter = document.querySelector("#crumbs :nth-child(4)");
+    if (currentChapter !== null) {
+        currentChapter = Number(currentChapter.textContent);
 
-    document.getElementById(DIV_SCRIPTURES).innerHTML = `${prevChapterButton}${bookButton}${nextChapterButton}<div style="clear: both;"></div>${chapterHtml}`;
+        let currentBook = Number(document.querySelector("#crumbs :nth-child(3) a").getAttribute("href").split(":")[1]);
+
+        if (currentBook !== Number(ids[1])) {
+            console.log(currentBook, ids[1])
+            direction = (currentBook < Number(ids[1])) ? "next" : "previous";
+        } else {
+            direction = (currentChapter < Number(ids[2])) ? "next" : "previous";
+        }
+    }
+
+    if (direction === "next") {
+        $(`#${offScreenDiv}`).css({opacity: 1, left: "100%"});
+        document.getElementById(offScreenDiv).innerHTML = `${ChapterNav}${chapterHtml}`;
+        $(`#${offScreenDiv}`).animate({left: "0%"}, {duration: 2500});
+        $(`#${onScreenDiv}`).animate({left: "-100%"}, {duration: 2500});
+    } else if (direction === "previous") {
+        $(`#${offScreenDiv}`).css({opacity: 1, left: "-100%"});
+        document.getElementById(offScreenDiv).innerHTML = `${ChapterNav}${chapterHtml}`;
+        $(`#${offScreenDiv}`).animate({left: "0%"}, {duration: 2500});
+        $(`#${onScreenDiv}`).animate({left: "100%"}, {duration: 2500});
+    } else {
+        //crossfade
+        $(`#${offScreenDiv}`).css({opacity: 0, left: "0%"});
+        document.getElementById(offScreenDiv).innerHTML = `${ChapterNav}${chapterHtml}`;
+        $(`#${offScreenDiv}`).animate({opacity: 1}, {duration: 2500});
+        $(`#${onScreenDiv}`).animate({opacity: 0}, {duration: 2500});
+        $(`#${onScreenDiv}`).css({left: "-100%"});
+    }
+
+    let temp = offScreenDiv; offScreenDiv = onScreenDiv; onScreenDiv = temp;
+
     injectBreadcrumbs(api.volumeForId(book.parentBookId), book, Number(ids[2]));
     MapHelper.setUpMarkers();
 };
 
 const getScripturesFailure = function () {
-    document.getElementById(DIV_SCRIPTURES).innerHTML = "Unable to receive chapter contents.";
+    document.getElementById(onScreenDiv).innerHTML = "Unable to receive chapter contents.";
     injectBreadcrumbs();
 };
 
