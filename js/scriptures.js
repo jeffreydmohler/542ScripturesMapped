@@ -15,14 +15,14 @@ browser, long
     */
 import api from "./MapScripApi.js";
 import MapHelper from "./MapHelper.js";
-import onHashChanged from "./Navigation.js";
+import navigation from "./Navigation.js";
 
 /*-------------------------------------------------------------------
     *                      PUBLIC API
     */
 const Scriptures = {
     init: api.init,
-    onHashChanged,
+    onHashChanged: navigation.onHashChanged,
     showLocation: MapHelper.showLocation
 };
 

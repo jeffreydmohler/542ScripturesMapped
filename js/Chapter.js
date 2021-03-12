@@ -24,6 +24,7 @@ import MapHelper from "./MapHelper.js";
 import injectBreadcrumbs from "./Breadcrumbs.js";
 import api from "./MapScripApi.js";
 import {books} from "./MapScripApi.js";
+import navigation from "./Navigation.js"
 
 /*-------------------------------------------------------------------
     *                      CONSTANTS
@@ -39,8 +40,6 @@ const DIV_SCRIPTURES2 = "s2";
 /*-------------------------------------------------------------------
     *                      PRIVATE VARIABLES
     */
-let onScreenDiv = DIV_SCRIPTURES1;
-let offScreenDiv = DIV_SCRIPTURES2;
 
 /*-------------------------------------------------------------------
     *                      PRIVATE METHODS
@@ -101,26 +100,7 @@ const getScripturesCallback = function (chapterHtml) {
         }
     }
 
-    if (direction === "next") {
-        $(`#${offScreenDiv}`).css({opacity: 1, left: "100%"});
-        document.getElementById(offScreenDiv).innerHTML = `${ChapterNav}${chapterHtml}`;
-        $(`#${offScreenDiv}`).animate({left: "0%"}, {duration: 2500});
-        $(`#${onScreenDiv}`).animate({left: "-100%"}, {duration: 2500});
-    } else if (direction === "previous") {
-        $(`#${offScreenDiv}`).css({opacity: 1, left: "-100%"});
-        document.getElementById(offScreenDiv).innerHTML = `${ChapterNav}${chapterHtml}`;
-        $(`#${offScreenDiv}`).animate({left: "0%"}, {duration: 2500});
-        $(`#${onScreenDiv}`).animate({left: "100%"}, {duration: 2500});
-    } else {
-        //crossfade
-        $(`#${offScreenDiv}`).css({opacity: 0, left: "0%"});
-        document.getElementById(offScreenDiv).innerHTML = `${ChapterNav}${chapterHtml}`;
-        $(`#${offScreenDiv}`).animate({opacity: 1}, {duration: 2500});
-        $(`#${onScreenDiv}`).animate({opacity: 0}, {duration: 2500});
-        $(`#${onScreenDiv}`).css({left: "-100%"});
-    }
-
-    let temp = offScreenDiv; offScreenDiv = onScreenDiv; onScreenDiv = temp;
+    navigation.animate(ChapterNav + chapterHtml, direction);
 
     injectBreadcrumbs(api.volumeForId(book.parentBookId), book, Number(ids[2]));
     MapHelper.setUpMarkers();

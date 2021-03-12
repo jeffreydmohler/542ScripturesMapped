@@ -41,13 +41,36 @@ const TAG_HEADER5 = "h5";
 /*-------------------------------------------------------------------
     *                      PRIVATE VARIABLES
     */
-
+let onScreenDiv = DIV_SCRIPTURES1;
+let offScreenDiv = DIV_SCRIPTURES2;
 
 /*-------------------------------------------------------------------
     *                      PRIVATE METHODS
     */
 
+const animate = function (content, animation) {
 
+    if (animation === "next") {
+        $(`#${offScreenDiv}`).css({opacity: 1, left: "100%"});
+        document.getElementById(offScreenDiv).innerHTML = content;
+        $(`#${offScreenDiv}`).animate({left: "0%"}, {duration: 450});
+        $(`#${onScreenDiv}`).animate({left: "-100%"}, {duration: 450});
+    } else if (animation === "previous") {
+        $(`#${offScreenDiv}`).css({opacity: 1, left: "-100%"});
+        document.getElementById(offScreenDiv).innerHTML = content;
+        $(`#${offScreenDiv}`).animate({left: "0%"}, {duration: 450});
+        $(`#${onScreenDiv}`).animate({left: "100%"}, {duration: 450});
+    } else {
+        //crossfade
+        $(`#${offScreenDiv}`).css({opacity: 0, left: "0%"});
+        document.getElementById(offScreenDiv).innerHTML = content;
+        $(`#${offScreenDiv}`).animate({opacity: 1}, {duration: 700});
+        $(`#${onScreenDiv}`).animate({opacity: 0}, {duration: 700});
+        $(`#${onScreenDiv}`).css({left: "-100%"});
+    }
+
+    let temp = offScreenDiv; offScreenDiv = onScreenDiv; onScreenDiv = temp;
+}
 
 const bookChapterValid = function (bookId, chapter) {
     let book = books[bookId];
@@ -60,7 +83,7 @@ const bookChapterValid = function (bookId, chapter) {
         return false;
     }
 
-    return true;
+    return Number.isInteger(chapter);
 };
 
 const booksGrid = function (volume) {
@@ -113,18 +136,19 @@ const chapterGridContent = function (book) {
     return gridContent;
 };
 
-
 const navigateBook = function (bookId) {
     let book = books[bookId];
 
     if (book.numChapters <= 1) {
         navigateChapter(bookId, book.numChapters);
     } else {
-        document.getElementById(DIV_SCRIPTURES1).innerHTML = html.div({
+        //document.getElementById(DIV_SCRIPTURES1).innerHTML
+        let content = html.div({
             id: DIV_SCRIPTURES_NAVIGATOR,
             content: chapterGrid(book)
         });
 
+        animate(content);
         injectBreadcrumbs(api.volumeForId(book.parentBookId), book);
         MapHelper.setUpMarkers();
     }
@@ -132,11 +156,13 @@ const navigateBook = function (bookId) {
 
 
 const navigateHome = function (volumeId) {
-    document.getElementById(DIV_SCRIPTURES1).innerHTML = html.div({
+    //document.getElementById(DIV_SCRIPTURES1).innerHTML
+    let content = html.div({
         id: DIV_SCRIPTURES_NAVIGATOR,
         content: volumesGridContent(volumeId)
     });
 
+    animate(content);
     injectBreadcrumbs(api.volumeForId(volumeId));
     MapHelper.setUpMarkers();
 };
@@ -199,6 +225,9 @@ const volumesGridContent = function (volumeId) {
 /*-------------------------------------------------------------------
     *                      PUBLIC API
     */
+const Navigation = {
+    onHashChanged,
+    animate
+};
 
-
-export default Object.freeze(onHashChanged);
+export default Object.freeze(Navigation);
