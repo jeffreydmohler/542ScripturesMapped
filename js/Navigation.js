@@ -147,7 +147,6 @@ const navigateBook = function (bookId) {
     if (book.numChapters <= 1) {
         navigateChapter(bookId, book.numChapters);
     } else {
-        //document.getElementById(DIV_SCRIPTURES1).innerHTML
         let content = html.div({
             id: DIV_SCRIPTURES_NAVIGATOR,
             content: chapterGrid(book)
@@ -161,7 +160,6 @@ const navigateBook = function (bookId) {
 
 
 const navigateHome = function (volumeId) {
-    //document.getElementById(DIV_SCRIPTURES1).innerHTML
     let content = html.div({
         id: DIV_SCRIPTURES_NAVIGATOR,
         content: volumesGridContent(volumeId)
