@@ -21,6 +21,11 @@ console, map, google, MarkerWithLabel
 */
 
 /*-------------------------------------------------------------------
+    *                      IMPORTS
+    */
+import {onScreenDiv} from "./Navigation.js";
+
+/*-------------------------------------------------------------------
     *                      CONSTANTS
     */
 const INDEX_FLAG = 11;
@@ -91,7 +96,7 @@ const setUpMarkers = function () {
         clearMarkers();
     }
 
-    document.querySelectorAll("a[onclick^=\"showLocation(\"]").forEach(function (element) {
+    document.querySelectorAll(`#${onScreenDiv} a[onclick^=\"showLocation(\"]`).forEach(function (element) {
         let matches = LAT_LON_PARSER.exec(element.getAttribute("onclick"));
 
         if (matches) {

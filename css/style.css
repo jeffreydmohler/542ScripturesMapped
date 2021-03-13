@@ -290,12 +290,9 @@ li.match {
     background-color: #ffffcc;
 }
 
-.nextchapter {
+.nextchapter, .prevchapter {
     padding: .5em;
-}
-
-.prevchapter {
-    padding: .5em;
+    font-weight: 600;
 }
 
 .chapternav {
@@ -306,6 +303,9 @@ li.match {
 .labels {
     background-color: white;
     border: solid 1px;
+    border-radius: .2rem;
+    padding: 0.25em;
+    font-weight: 600;
 }
 
 @media (min-width: 1200px) {
@@ -320,8 +320,8 @@ li.match {
     }
 }
 
-@media (min-width: 1024px) and (max-width: 1200px) {
-    /* this is set of rules for tablets */
+@media (max-width: 1199px) and (min-width: 850px) and (orientation: landscape), (min-width: 1024px) and (orientation: portrait) {
+    /* this is set of rules for landscape tablets or really big portrait like Ipad Pro  */
     #header {
         flex-direction: column-reverse;
     }
@@ -333,10 +333,6 @@ li.match {
     div.subtitle {
         display: none;
     }
-
-    /* #content {
-        flex-direction: column-reverse;
-    } */
 
     #collapse {
         position: fixed;
@@ -358,12 +354,53 @@ li.match {
     }
 
     #map {
-        flex: 1 1 100%;
+        flex: 1 1 200%;
     }
 }
 
-@media (max-width: 1023px) {
-    /* this is set of rules for mobile devices*/
+@media (max-width: 849px) and (orientation: landscape) {
+    /* this is set of rules for landscape phones  */
+    #header {
+        flex-direction: column-reverse;
+    }
+
+    #crumbs {
+        padding-bottom: 1em;
+    }
+
+    div.subtitle {
+        display: none;
+    }
+
+    #collapse {
+        position: fixed;
+        left: 8px;
+        top: 15px;
+        z-index: 10001;
+        padding: 0.15rem 0.2rem;
+        font-size: 0.775rem;
+        font-weight: 600;
+    }
+
+    #scriptures {
+        max-width: 1024px;
+        flex: 1 1 100%;
+        border-top: 1px solid #aaa;
+        min-height: 0%;
+        transition: flex ease-in-out 350ms;
+    }
+
+    #scriptures.closed {
+        flex: 1 1 0%;
+    }
+
+    #map {
+        flex: 1 1 150%;
+    }
+}
+
+@media (max-width: 1023px) and (min-width: 740px) and (orientation: portrait) {
+    /* this is set of rules for portrait tablets */
     #header {
         flex-direction: column-reverse;
     }
@@ -380,20 +417,70 @@ li.match {
         flex-direction: column-reverse;
     }
 
+    .nextchapter, .prevchapter {
+        font-size: 1rem;
+    }
+
+    #collapse {
+        font-weight: 500;
+    }
+
     #scriptures {
         max-width: 1023px;
-        flex: 1 1 200%;
+        flex: 1 1 150%;
         border-top: 1px solid #aaa;
-        min-height: 1%;
+        min-height: 0%;
         transition: flex ease-in-out 350ms;
     }
 
     #scriptures.closed {
-        flex: 1 1 5%;
+        flex: 1 1 0%;
     }
 
     #map {
         flex: 1 1 100%;
     }
 }
+
+@media (max-width: 739px) and (orientation: portrait) {
+    /* this is set of rules for portrait phone/tablets */
+    #header {
+        flex-direction: column-reverse;
+    }
+
+    #crumbs {
+        padding-bottom: 1em;
+    }
+
+    div.subtitle {
+        display: none;
+    }
+
+    #content {
+        flex-direction: column-reverse;
+    }
+
+    #collapse {
+        font-size: .75rem;
+        font-weight: 500;
+    }
+
+    #scriptures {
+        max-width: 1023px;
+        flex: 1 1 300%;
+        border-top: 1px solid #aaa;
+        min-height: 0%;
+        transition: flex ease-in-out 350ms;
+    }
+
+    #scriptures.closed {
+        flex: 1 1 0%;
+    }
+
+    #map {
+        flex: 1 1 100%;
+    }
+}
+
+
 

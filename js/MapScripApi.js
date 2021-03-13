@@ -88,8 +88,6 @@ const getData = function (url, successCallback, failureCallback, skipJsonParse) 
     }).catch(function (error) {
         if (typeof failureCallback === "function") {
             failureCallback(error);
-            console.log("Error: " + error);
-            console.log(error.stack)
         } else {
             console.log(error.message);
         }

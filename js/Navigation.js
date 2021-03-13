@@ -9,6 +9,12 @@
 /*jslint
 browser, long
 */
+/*property
+    anchor, animate, books, classKey, content, css, div, duration, element,
+    forEach, freeze, fullName, getElementById, gridName, hash, href, id,
+    innerHTML, isInteger, left, length, link, numChapters, onHashChanged,
+    opacity, parentBookId, setUpMarkers, slice, split, volumeForId
+*/
 
 
 /*-------------------------------------------------------------------
@@ -31,7 +37,6 @@ const CLASS_BUTTON = "btn";
 const CLASS_CHAPTER = "chapter";
 const CLASS_VOLUME = "volume";
 const DIV_SCRIPTURES_NAVIGATOR = "scripnav";
-const DIV_SCRIPTURES = "scriptures";
 const DIV_SCRIPTURES1 = "s1";
 const DIV_SCRIPTURES2 = "s2";
 const TAG_HEADER5 = "h5";
@@ -70,7 +75,7 @@ const animate = function (content, animation) {
     }
 
     let temp = offScreenDiv; offScreenDiv = onScreenDiv; onScreenDiv = temp;
-}
+};
 
 const bookChapterValid = function (bookId, chapter) {
     let book = books[bookId];
@@ -230,4 +235,5 @@ const Navigation = {
     animate
 };
 
+export {onScreenDiv};
 export default Object.freeze(Navigation);

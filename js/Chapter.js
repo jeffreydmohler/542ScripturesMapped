@@ -10,10 +10,12 @@
 browser, long
 */
 /*property
-    classKey, content, freeze, getElementById, hash, href, id, innerHTML, link,
-    numChapters, parentBookId, requestChapter, setUpMarkers, slice, split,
-    tocName, volumeForId
+    animate, classKey, content, div, freeze, getAttribute, getElementById, hash,
+    href, id, innerHTML, link, log, numChapters, parentBookId, querySelector,
+    requestChapter, setUpMarkers, slice, split, textContent, tocName,
+    volumeForId
 */
+
 
 
 /*-------------------------------------------------------------------
@@ -24,18 +26,16 @@ import MapHelper from "./MapHelper.js";
 import injectBreadcrumbs from "./Breadcrumbs.js";
 import api from "./MapScripApi.js";
 import {books} from "./MapScripApi.js";
-import navigation from "./Navigation.js"
+import navigation from "./Navigation.js";
 
 /*-------------------------------------------------------------------
     *                      CONSTANTS
     */
 
-const CLASS_BUTTON = "btn";
+const CLASS_BUTTON = "btn btn-sm";
 const CLASS_CHAPTER_NAV = "chapternav";
 const CLASS_NEXT = "nextchapter";
 const CLASS_PREVIOUS = "prevchapter";
-const DIV_SCRIPTURES1 = "s1";
-const DIV_SCRIPTURES2 = "s2";
 
 /*-------------------------------------------------------------------
     *                      PRIVATE VARIABLES
@@ -83,7 +83,7 @@ const getScripturesCallback = function (chapterHtml) {
     let ChapterNav = html.div({
         classKey: CLASS_CHAPTER_NAV,
         content: prevChapterButton + nextChapterButton
-    })
+    });
 
     let direction;
     let currentChapter = document.querySelector("#crumbs :nth-child(4)");
@@ -93,10 +93,17 @@ const getScripturesCallback = function (chapterHtml) {
         let currentBook = Number(document.querySelector("#crumbs :nth-child(3) a").getAttribute("href").split(":")[1]);
 
         if (currentBook !== Number(ids[1])) {
-            console.log(currentBook, ids[1])
-            direction = (currentBook < Number(ids[1])) ? "next" : "previous";
+            direction = (
+                (currentBook < Number(ids[1]))
+                ? "next"
+                : "previous"
+            );
         } else {
-            direction = (currentChapter < Number(ids[2])) ? "next" : "previous";
+            direction = (
+                (currentChapter < Number(ids[2]))
+                ? "next"
+                : "previous"
+            );
         }
     }
 
@@ -107,7 +114,7 @@ const getScripturesCallback = function (chapterHtml) {
 };
 
 const getScripturesFailure = function () {
-    document.getElementById(onScreenDiv).innerHTML = "Unable to receive chapter contents.";
+    navigation.animate("Unable to receive chapter contents.");
     injectBreadcrumbs();
 };
 
