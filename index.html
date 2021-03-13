@@ -57,15 +57,13 @@
         }
 
         function initCollapseContent() {
-            if ($(window).width() <= 1024) {
-                $("#collapse").click( function(e) {
-                    if (e.cancelable) {
-                        e.preventDefault();
-                        $("#scriptures").toggleClass('closed')
-                        $("#collapse").text($("#collapse").text() == 'Extend Scriptures' ? 'Collapse Scriptures' : 'Extend Scriptures');
-                    }
-                })
-            }
+            $("#collapse").click( function(e) {
+                if (e.cancelable) {
+                    e.preventDefault();
+                    $("#scriptures").toggleClass('closed')
+                    $("#collapse").text($("#collapse").text() == 'Extend Scriptures' ? 'Collapse Scriptures' : 'Extend Scriptures');
+                }
+            })
         }
 
     </script>
